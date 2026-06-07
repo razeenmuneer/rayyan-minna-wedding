@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
+    <title>Rayyan & Minna | Save The Date</title>
+    
+    <meta property="og:title" content="Rayyan & Minna | Save The Date">
+    <meta property="og:description" content="Join us to celebrate our new beginning. July 4 & 5, 2026.">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1509315811345-672d83ef2fbc?q=80&w=1200&auto=format&fit=crop">
+    <meta property="og:type" content="website">
+    <meta name="theme-color" content="#052b14">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Montserrat:wght@200;300;400;500;600;700&family=Tangerine:wght@400;700&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        emeraldBg: '#052b14',
+                        emeraldCard: '#0a4020',
+                        darkGold: '#b38728',
+                    },
+                    fontFamily: {
+                        cormorant: ['"Cormorant Garamond"', 'serif'],
+                        montserrat: ['Montserrat', 'sans-serif'],
+                        tangerine: ['Tangerine', 'cursive']
+                    }
+                }
+            }
+        }
+    </script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        body {
+            background-color: #052b14;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+            background-attachment: fixed;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .delay-100 { transition-delay: 100ms; }
+        .delay-200 { transition-delay: 200ms; }
+
+        .countdown-box {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: clamp(55px, 16vw, 85px); 
+            height: clamp(55px, 16vw, 85px);
+            border: 1px solid rgba(179, 135, 40, 0.5);
+            border-radius: 50%;
+            background: rgba(10, 64, 32, 0.8);
+            backdrop-filter: blur(4px);
+            box-shadow: 0 0 15px rgba(179, 135, 40, 0.15);
+            transition: all 0.3s ease;
+        }
+
+        @media (min-width: 640px) {
+            .countdown-box { width: 90px; height: 90px; }
+        }
+
+        /* ============================================
+           ENVELOPE ANIMATION KEYFRAMES & STYLES
+        ============================================ */
+        @keyframes sealBreathe {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); }
+            50%       { transform: translate(-50%, -50%) scale(1.06); }
+        }
+
+        @keyframes sealRipple {
+            0%   { transform: translate(-50%, -50%) scale(1);   opacity: 0.6; }
+            100% { transform: translate(-50%, -50%) scale(2.2); opacity: 0; }
+        }
+
+        @keyframes envelopePulse {
+            0%, 100% { opacity: 1; }
+            50%       { opacity: 0.4; }
+        }
+
+        @keyframes shimmerSweep {
+            0%   { transform: translateX(-120%) skewX(-15deg); }
+            100% { transform: translateX(220%) skewX(-15deg); }
+        }
+
+        #envelope-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            cursor: pointer;
+            touch-action: none;
+            overflow: hidden;
+            background: #03150a;
+            transform-origin: center bottom;
+            will-change: transform, opacity;
+        }
+
+        #envelope-noise {
+            position: absolute;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.05'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        #envelope-body {
+            position: absolute;
+            inset: 0;
+            background-color: #052b14;
+	    background-image: repeating-linear-gradient(
+        	45deg,
+        	rgba(179, 135, 40, 0.04) 0px,
+        	rgba(179, 135, 40, 0.04) 1px,
+        	transparent 1px,
+        	transparent 15px
+    	    );
+            clip-path: polygon(0 0, 50% 50%, 100% 0, 100% 100%, 0 100%);
+            z-index: 10;
+        }
+
+        #envelope-body::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, transparent 0%, rgba(179, 135, 40, 0.04) 50%, transparent 100%);
+        }
+
+        #envelope-perspective {
+            position: absolute;
+            inset: 0;
+            perspective: 1200px;
+            perspective-origin: 50% 0%;
+            pointer-events: none;
+            z-index: 20;
+        }
+
+        #envelope-top-flap {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 55%;
+            background: #052b14;
+            clip-path: polygon(0 0, 100% 0, 50% 100%);
+            z-index: 20;
+            transform-origin: top center;
+            transform-style: preserve-3d;
+            -webkit-transform-style: preserve-3d;
+            transition: none;
+            will-change: transform, filter;
+            overflow: hidden;
+        }
+
+        #envelope-top-flap::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(0,0,0,0.3) 0%, rgba(5, 43, 20, 0.1) 60%, rgba(0,0,0,0.5) 100%);
+            z-index: 1;
+        }
+
+        #envelope-top-flap::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 1px;
+            height: 60%;
+            background: linear-gradient(to bottom, rgba(179,135,40,0.5), transparent);
+            z-index: 3;
+        }
+
+        #flap-shimmer {
+            position: absolute;
+            inset: 0;
+            width: 40%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent 0%, rgba(179, 135, 40, 0.25) 50%, transparent 100%);
+            z-index: 2;
+            opacity: 0;
+            pointer-events: none;
+            transform: translateX(-120%) skewX(-15deg);
+        }
+
+        #envelope-wax-seal {
+            position: absolute;
+            top: 55%;
+            left: 50%;
+            width: clamp(80px, 12vw, 100px);
+            height: clamp(80px, 12vw, 100px);
+            transform: translate(-50%, -50%);
+            z-index: 30;
+            cursor: pointer;
+            will-change: transform, opacity;
+            animation: sealBreathe 2.5s ease-in-out infinite;
+        }
+
+        #seal-ripple {
+            position: absolute;
+            top: 55%;
+            left: 50%;
+            width: clamp(80px, 12vw, 100px);
+            height: clamp(80px, 12vw, 100px);
+            border-radius: 50%;
+            border: 1.5px solid rgba(179, 135, 40, 0.7);
+            pointer-events: none;
+            z-index: 28;
+            transform: translate(-50%, -50%) scale(1);
+            animation: sealRipple 3s ease-out infinite;
+        }
+
+        #seal-ripple-2 {
+            position: absolute;
+            top: 55%;
+            left: 50%;
+            width: clamp(80px, 12vw, 100px);
+            height: clamp(80px, 12vw, 100px);
+            border-radius: 50%;
+            border: 1px solid rgba(179, 135, 40, 0.4);
+            pointer-events: none;
+            z-index: 27;
+            transform: translate(-50%, -50%) scale(1);
+            animation: sealRipple 3s ease-out 1.5s infinite;
+        }
+
+        #envelope-card {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, calc(-50% + 30px));
+            z-index: 15;
+            text-align: center;
+            opacity: 0;
+            pointer-events: none;
+            will-change: transform, opacity;
+        }
+
+        #envelope-hint {
+            position: absolute;
+            bottom: 10%;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 35;
+            text-align: center;
+            animation: envelopePulse 2s ease-in-out infinite;
+            white-space: nowrap;
+            will-change: opacity;
+        }
+    </style>
+</head>
+<body class="font-montserrat antialiased overflow-x-hidden selection:bg-darkGold selection:text-emeraldBg relative text-darkGold">
+
+    <!-- ENVELOPE OVERLAY -->
+    <div id="envelope-overlay" role="button" aria-label="Click to open invitation">
+
+        <!-- Noise texture layer -->
+        <div id="envelope-noise"></div>
+
+        <!-- Envelope body (bottom triangle) -->
+        <div id="envelope-body"></div>
+
+        <!-- Perspective wrapper for 3D flap -->
+        <div id="envelope-perspective">
+            <!-- Top flap -->
+            <div id="envelope-top-flap">
+                <!-- Shimmer sweep -->
+                <div id="flap-shimmer"></div>
+            </div>
+        </div>
+
+        <!-- Ripple rings (behind seal) -->
+        <div id="seal-ripple"></div>
+        <div id="seal-ripple-2"></div>
+
+        <!-- Wax Seal + Image Container -->
+        <div id="envelope-wax-seal">
+            <!-- The Red Wax SVG Base -->
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="position:absolute; inset:0; width:100%; height:100%;">
+                <defs>
+                    <radialGradient id="waxGrad" cx="38%" cy="32%" r="65%">
+                        <stop offset="0%"   stop-color="#c43232"/>
+                        <stop offset="40%"  stop-color="#a82828"/>
+                        <stop offset="75%"  stop-color="#691111"/>
+                        <stop offset="100%" stop-color="#3d0707"/>
+                    </radialGradient>
+                    <radialGradient id="waxShine" cx="35%" cy="28%" r="45%">
+                        <stop offset="0%"   stop-color="rgba(255,255,255,0.2)"/>
+                        <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
+                    </radialGradient>
+                    <filter id="sealShadow" x="-20%" y="-20%" width="140%" height="140%">
+                        <feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="rgba(0,0,0,0.6)"/>
+                    </filter>
+                </defs>
+                <!-- Main seal circle -->
+                <circle cx="50" cy="50" r="44" fill="url(#waxGrad)" filter="url(#sealShadow)"/>
+                <!-- Shine overlay -->
+                <circle cx="50" cy="50" r="44" fill="url(#waxShine)"/>
+                <!-- Outer decorative ring -->
+                <circle cx="50" cy="50" r="40" fill="none" stroke="rgba(212,168,67,0.5)" stroke-width="1"/>
+                <!-- Inner decorative ring -->
+                <circle cx="50" cy="50" r="34" fill="none" stroke="rgba(212,168,67,0.3)" stroke-width="0.5"/>
+            </svg>
+            <!-- Logo overlayed perfectly center -->
+            <img src="R&M Logo.png" alt="R&M Logo" style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); width: 55%; height: 55%; object-fit: contain; filter: drop-shadow(0 1px 2px rgba(0,0,0,0.4));" />
+        </div>
+
+        <!-- Rising invitation card -->
+        <div id="envelope-card">
+            <p style="font-family: 'Tangerine', cursive; font-size: clamp(2rem, 6vw, 3rem); color: #d4a843; line-height: 1.2; text-shadow: 0 2px 20px rgba(0,0,0,0.5);">
+                Rayyan & Minna
+            </p>
+            <p style="font-family: 'Cormorant Garamond', serif; font-size: clamp(0.65rem, 1.5vw, 0.8rem); letter-spacing: 0.25em; color: rgba(179,135,40,0.8); margin-top: 6px; text-transform: uppercase;">
+                Save The Date
+            </p>
+        </div>
+
+        <!-- Hint text -->
+        <div id="envelope-hint">
+            <p style="font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: clamp(0.85rem, 2vw, 1rem); color: #b38728; letter-spacing: 0.15em;">
+                Tap the seal to open
+            </p>
+        </div>
+
+    </div>
+
+    <script>
+        (function initEnvelopeAnimation() {
+            const overlay  = document.getElementById('envelope-overlay');
+            const flap     = document.getElementById('envelope-top-flap');
+            const seal     = document.getElementById('envelope-wax-seal');
+            const hint     = document.getElementById('envelope-hint');
+            const card     = document.getElementById('envelope-card');
+            const shimmer  = document.getElementById('flap-shimmer');
+            const ripple   = document.getElementById('seal-ripple');
+            const ripple2  = document.getElementById('seal-ripple-2');
+
+            // Lock body scroll initially
+            document.body.style.overflow = 'hidden';
+
+            let animating = false;
+
+            function handleOpen() {
+                if (animating) return;
+                animating = true;
+
+                // Stage 1 (0ms): Stop breathing, scale seal up with spring
+                seal.style.animation = 'none';
+                ripple.style.animation  = 'none';
+                ripple2.style.animation = 'none';
+                ripple.style.opacity  = '0';
+                ripple2.style.opacity = '0';
+
+                seal.style.transition = 'transform 150ms cubic-bezier(0.34, 1.56, 0.64, 1), opacity 150ms ease';
+                seal.style.transform  = 'translate(-50%, -50%) scale(1.15)';
+
+                // Stage 2 (150ms): Crack/shatter seal, fade hint
+                setTimeout(() => {
+                    seal.style.transition = 'transform 400ms cubic-bezier(0.68, -0.55, 0.27, 1.55), opacity 400ms cubic-bezier(0.68, -0.55, 0.27, 1.55)';
+                    seal.style.transform  = 'translate(-50%, -50%) scale(0) rotate(15deg)';
+                    seal.style.opacity    = '0';
+
+                    hint.style.transition = 'opacity 200ms ease-in';
+                    hint.style.opacity    = '0';
+                }, 150);
+
+                // Stage 3 (400ms): Flap opens (3D rotateX)
+                setTimeout(() => {
+                    flap.style.transition = 'transform 1000ms cubic-bezier(0.25, 0.46, 0.45, 0.94), filter 1000ms cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 1000ms ease';
+                    flap.style.transform  = 'rotateX(-180deg)';
+                    flap.style.filter     = 'brightness(0.5)';
+                    flap.style.boxShadow  = '0 20px 40px rgba(0,0,0,0.8)';
+
+                    // Shimmer sweep starts 100ms after flap begins, lasts 600ms
+                    setTimeout(() => {
+                        shimmer.style.opacity    = '1';
+                        shimmer.style.transition = 'transform 600ms cubic-bezier(0.4, 0, 0.2, 1)';
+                        shimmer.style.transform  = 'translateX(220%) skewX(-15deg)';
+                        setTimeout(() => { shimmer.style.opacity = '0'; }, 650);
+                    }, 100);
+
+                }, 400);
+
+                // Stage 4 (900ms): Invitation card rises from envelope
+                setTimeout(() => {
+                    card.style.transition = 'transform 500ms cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 500ms cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+                    card.style.opacity    = '1';
+                    card.style.transform  = 'translate(-50%, calc(-50% - 20px))';
+
+                    setTimeout(() => {
+                        card.style.transition = 'opacity 200ms ease-in';
+                        card.style.opacity    = '0';
+                    }, 500);
+
+                }, 900);
+
+                // Stage 5 (1500ms): Entire overlay slides down off-screen
+                setTimeout(() => {
+                    overlay.style.transition = 'transform 900ms cubic-bezier(0.4, 0, 0.2, 1), opacity 900ms cubic-bezier(0.4, 0, 0.2, 1)';
+                    overlay.style.transform  = 'translateY(105vh)';
+                    overlay.style.opacity    = '0';
+
+                    // Restore body scroll as overlay exits
+                    document.body.style.overflow = '';
+                    document.body.style.overflowX = 'hidden';
+
+                }, 1500);
+
+                // Stage 6 (2600ms): Remove overlay from DOM
+                setTimeout(() => {
+                    if (overlay && overlay.parentNode) {
+                        overlay.parentNode.removeChild(overlay);
+                    }
+                }, 2600);
+            }
+
+            overlay.addEventListener('click', handleOpen, { once: true });
+            overlay.addEventListener('touchend', function(e) {
+                e.preventDefault();
+                handleOpen();
+            }, { once: true, passive: false });
+        })();
+    </script>
+
+    <div class="fixed inset-3 sm:inset-5 border border-darkGold/40 pointer-events-none z-40 shadow-[0_0_15px_rgba(179,135,40,0.1)]">
+        <div class="absolute inset-1 sm:inset-2 border border-darkGold/20"></div>
+        <div class="absolute -top-1 -left-1 w-2 h-2 bg-darkGold/80"></div>
+        <div class="absolute -top-1 -right-1 w-2 h-2 bg-darkGold/80"></div>
+        <div class="absolute -bottom-1 -left-1 w-2 h-2 bg-darkGold/80"></div>
+        <div class="absolute -bottom-1 -right-1 w-2 h-2 bg-darkGold/80"></div>
+    </div>
+
+    <nav class="fixed w-full top-0 z-50 bg-emeraldBg/80 backdrop-blur-md border-b border-darkGold/20 transition-all duration-300 py-2" id="navbar">
+        <div class="flex justify-center items-center w-full">
+            <a href="#hero" class="inline-block relative z-50">
+                <img src="R&M Logo.png" alt="R & M Logo" class="h-14 w-auto object-contain drop-shadow-[0_0_8px_rgba(179,135,40,0.3)]" />
+            </a>
+        </div>
+    </nav>
+
+    <section id="hero" class="relative min-h-[100dvh] w-full flex flex-col justify-center items-center text-center px-6 sm:px-8 pt-28 pb-8">
+        <div class="reveal mt-4 flex flex-col items-center w-full z-10">
+            <div class="mb-4 flex justify-center w-full">
+                <img src="Bismillah.png" alt="Bismillah Calligraphy" class="h-12 md:h-16 w-auto object-contain drop-shadow-[0_0_10px_rgba(179,135,40,0.4)]" />
+            </div>
+
+            <div class="font-cormorant font-medium uppercase tracking-[0.1em] text-[9px] sm:text-[10px] md:text-xs mb-8 leading-relaxed max-w-sm drop-shadow-sm">
+                <span>IN THE NAME OF ALLAH, THE MOST GRACIOUS</span>
+                <span class="block">AND THE MOST MERCIFUL</span>
+            </div>
+
+            <div class="font-cormorant italic text-center mb-8 w-full max-w-md px-2 text-[16px] sm:text-[18px] text-darkGold opacity-90 leading-tight drop-shadow-sm">
+                With hearts wrapped in gratitude and souls filled with duas,<br>
+                we cordially invite you to the Wedding of
+            </div>
+
+            <div class="flex flex-col items-center w-full">
+                <h1 class="font-tangerine text-6xl sm:text-7xl md:text-8xl font-bold mb-0 tracking-wide leading-none drop-shadow-md">Rayyan Muneer</h1>
+                <p class="font-montserrat uppercase tracking-[0.15em] text-[10px] sm:text-[11px] mb-6 mt-1 font-bold opacity-90">S/o Muneer and Muneera</p>
+                
+                <h1 class="font-cormorant text-4xl italic mb-5 font-light">&</h1>
+                
+                <h1 class="font-tangerine text-6xl sm:text-7xl md:text-8xl font-bold mb-0 tracking-wide leading-none drop-shadow-md">Minna Shihab</h1>
+                <p class="font-montserrat uppercase tracking-[0.15em] text-[10px] sm:text-[11px] mb-8 mt-1 font-bold opacity-90">D/o Shihab and Asya</p>
+            </div>
+            
+            <div class="flex flex-col items-center mt-2 border-t border-darkGold/30 pt-8 w-full max-w-md">
+                <img src="In Sha Allah.png" alt="In Sha Allah" class="h-26 sm:h-28 mb-6 w-auto object-contain opacity-90 drop-shadow-[0_0_6px_rgba(179,135,40,0.3)]" />
+
+                <div class="flex flex-row items-center justify-center gap-6 sm:gap-10 w-full mb-6">
+                    <div class="flex flex-col items-center">
+                        <span class="font-montserrat uppercase tracking-[0.2em] text-[9px] sm:text-[10px] font-semibold text-darkGold">July 2026</span>
+                        <div class="relative mt-3 mb-3 w-14 h-14 sm:w-16 sm:h-16 border-[1.5px] border-darkGold rounded-md flex items-center justify-center bg-transparent drop-shadow-md backdrop-blur-sm">
+                            <div class="absolute top-2.5 left-0 w-full border-t-[1.5px] border-darkGold"></div>
+                            <div class="absolute -top-2 left-0 w-full flex justify-center gap-1">
+                                <div class="w-1.5 h-3.5 border-[1.5px] border-darkGold rounded-full bg-[#062813]"></div>
+                                <div class="w-1.5 h-3.5 border-[1.5px] border-darkGold rounded-full bg-[#062813]"></div>
+                                <div class="w-1.5 h-3.5 border-[1.5px] border-darkGold rounded-full bg-[#062813]"></div>
+                            </div>
+                            <span class="font-cormorant text-3xl sm:text-4xl font-bold text-darkGold leading-none">4</span>
+                        </div>
+                        <span class="font-montserrat uppercase tracking-[0.2em] text-[9px] sm:text-[10px] font-semibold text-darkGold">Saturday</span>
+                    </div>
+
+                    <div class="h-20 w-px bg-darkGold/40 mx-2"></div>
+
+                    <div class="flex flex-col items-center">
+                        <span class="font-montserrat uppercase tracking-[0.2em] text-[9px] sm:text-[10px] font-semibold text-darkGold">July 2026</span>
+                        <div class="relative mt-3 mb-3 w-14 h-14 sm:w-16 sm:h-16 border-[1.5px] border-darkGold rounded-md flex items-center justify-center bg-transparent drop-shadow-md backdrop-blur-sm">
+                            <div class="absolute top-2.5 left-0 w-full border-t-[1.5px] border-darkGold"></div>
+                            <div class="absolute -top-2 left-0 w-full flex justify-center gap-1">
+                                <div class="w-1.5 h-3.5 border-[1.5px] border-darkGold rounded-full bg-[#062813]"></div>
+                                <div class="w-1.5 h-3.5 border-[1.5px] border-darkGold rounded-full bg-[#062813]"></div>
+                                <div class="w-1.5 h-3.5 border-[1.5px] border-darkGold rounded-full bg-[#062813]"></div>
+                            </div>
+                            <span class="font-cormorant text-3xl sm:text-4xl font-bold text-darkGold leading-none">5</span>
+                        </div>
+                        <span class="font-montserrat uppercase tracking-[0.2em] text-[9px] sm:text-[10px] font-semibold text-darkGold">Sunday</span>
+                    </div>
+                </div>
+                
+                <a href="#events" class="animate-bounce text-darkGold mt-2">
+                    <i data-lucide="chevron-down" class="w-8 h-8 drop-shadow-[0_0_5px_rgba(179,135,40,0.4)]"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section class="pt-2 pb-12 px-6 text-center">
+        <div class="font-cormorant italic text-[16px] sm:text-[18px] text-darkGold opacity-90 leading-tight drop-shadow-sm">
+            Days of celebration wrapped in rhythm, grace and quiet elegance
+        </div>
+    </section>
+
+    <section id="events" class="py-12 px-6 sm:px-8 relative z-10">
+        <div class="w-full max-w-3xl mx-auto">
+            <div class="flex flex-col gap-8">
+                <div class="bg-emeraldCard/80 backdrop-blur-sm p-6 sm:p-8 text-center reveal border border-darkGold/20 shadow-[0_0_20px_rgba(0,0,0,0.3)] relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-4 h-4 border-t border-l border-darkGold/40 m-2"></div>
+                    <div class="absolute top-0 right-0 w-4 h-4 border-t border-r border-darkGold/40 m-2"></div>
+                    <div class="absolute bottom-0 left-0 w-4 h-4 border-b border-l border-darkGold/40 m-2"></div>
+                    <div class="absolute bottom-0 right-0 w-4 h-4 border-b border-r border-darkGold/40 m-2"></div>
+                    
+                    <i data-lucide="sparkles" class="w-6 h-6 mx-auto mb-4 drop-shadow-[0_0_4px_rgba(179,135,40,0.4)]"></i>
+                    <h3 class="font-cormorant text-3xl font-semibold mb-1">Mehendi</h3>
+                    <p class="font-medium uppercase tracking-[0.15em] text-xs mb-6 opacity-90">July 4, 2026</p>
+                    <div class="space-y-3 font-medium text-sm mb-4 opacity-90">
+                        <p class="flex items-center justify-center gap-2"><i data-lucide="clock" class="w-4 h-4"></i> 6:00 PM Onwards</p>
+                        <p class="flex items-center justify-center gap-2"><i data-lucide="map-pin" class="w-4 h-4"></i> Olive - Groom's Residence</p>
+                    </div>
+                </div>
+
+                <div class="bg-emeraldCard/80 backdrop-blur-sm p-6 sm:p-8 text-center reveal delay-100 border border-darkGold/20 shadow-[0_0_20px_rgba(0,0,0,0.3)] relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-4 h-4 border-t border-l border-darkGold/40 m-2"></div>
+                    <div class="absolute top-0 right-0 w-4 h-4 border-t border-r border-darkGold/40 m-2"></div>
+                    <div class="absolute bottom-0 left-0 w-4 h-4 border-b border-l border-darkGold/40 m-2"></div>
+                    <div class="absolute bottom-0 right-0 w-4 h-4 border-b border-r border-darkGold/40 m-2"></div>
+
+                    <i data-lucide="heart-handshake" class="w-6 h-6 mx-auto mb-4 drop-shadow-[0_0_4px_rgba(179,135,40,0.4)]"></i>
+                    <h3 class="font-cormorant text-3xl font-semibold mb-1">Wedding</h3>
+                    <p class="font-medium uppercase tracking-[0.15em] text-xs mb-6 opacity-90">July 5, 2026</p>
+                    <div class="space-y-3 font-medium text-sm mb-4 opacity-90">
+                        <p class="flex items-center justify-center gap-2"><i data-lucide="clock" class="w-4 h-4"></i> 12:00 PM Onwards</p>
+                        <p class="flex items-center justify-center gap-2"><i data-lucide="map-pin" class="w-4 h-4"></i> Olive - Groom's Residence</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-10 flex justify-center reveal delay-200">
+                <a href="https://maps.app.goo.gl/PoLn1HLzdxciDDNFA" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-3 px-8 py-4 bg-darkGold text-emeraldBg hover:bg-transparent hover:text-darkGold transition-colors uppercase tracking-[0.15em] text-xs font-bold border border-darkGold relative z-20 shadow-[0_0_15px_rgba(179,135,40,0.3)]">
+                    View Location on Map
+                    <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section id="countdown" class="py-24 flex flex-col items-center justify-center px-4 sm:px-8 relative border-t border-darkGold/20 z-10">
+        <div class="w-full text-center reveal">
+            <h2 class="font-cormorant text-3xl sm:text-4xl font-semibold mb-4 tracking-wide drop-shadow-sm">Countdown to Wedding</h2>
+            <div class="w-12 h-px bg-darkGold mx-auto mb-10 shadow-[0_0_5px_rgba(179,135,40,0.5)]"></div>
+            <div class="flex flex-row justify-center items-center gap-2 sm:gap-4 w-full max-w-md mx-auto">
+                <div class="countdown-box"><span id="days" class="font-cormorant text-xl sm:text-3xl lg:text-4xl font-bold">00</span><span class="text-[7px] sm:text-[9px] font-medium uppercase tracking-widest mt-0 opacity-90">Days</span></div>
+                <div class="countdown-box"><span id="hours" class="font-cormorant text-xl sm:text-3xl lg:text-4xl font-bold">00</span><span class="text-[7px] sm:text-[9px] font-medium uppercase tracking-widest mt-0 opacity-90">Hours</span></div>
+                <div class="countdown-box"><span id="minutes" class="font-cormorant text-xl sm:text-3xl lg:text-4xl font-bold">00</span><span class="text-[7px] sm:text-[9px] font-medium uppercase tracking-widest mt-0 opacity-90">Mins</span></div>
+                <div class="countdown-box"><span id="seconds" class="font-cormorant text-xl sm:text-3xl lg:text-4xl font-bold">00</span><span class="text-[7px] sm:text-[9px] font-medium uppercase tracking-widest mt-0 opacity-90">Secs</span></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-24 px-6 sm:px-8 border-t border-darkGold/20 relative z-10">
+        <div class="w-full text-center reveal">
+            <h2 class="font-cormorant text-3xl sm:text-4xl mb-6 leading-relaxed font-semibold italic drop-shadow-sm">
+                "We can't wait to celebrate this beautiful new beginning with you."
+            </h2>
+            <p class="font-montserrat font-medium text-sm mb-10 px-4 opacity-90">
+                Your presence and duas are our greatest gifts.
+            </p>
+            <div class="w-12 h-px bg-darkGold mx-auto mb-8 shadow-[0_0_5px_rgba(179,135,40,0.5)]"></div>
+        </div>
+    </section>
+
+    <footer class="border-t border-darkGold/20 py-8 pb-12 text-center text-darkGold/60 text-[10px] font-montserrat uppercase tracking-[0.2em] relative z-10">
+        <p>© 2026 Rayyan & Minna.</p>
+    </footer>
+
+    <script>
+        lucide.createIcons();
+        const revealElements = document.querySelectorAll('.reveal');
+        const revealObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('active'); observer.unobserve(entry.target); } });
+        }, { threshold: 0.1 });
+        revealElements.forEach(el => revealObserver.observe(el));
+
+        const weddingDate = new Date("July 4, 2026 18:00:00").getTime();
+        const updateCountdown = () => {
+            const now = new Date().getTime();
+            const distance = weddingDate - now;
+            if (distance < 0) return;
+            document.getElementById("days").innerText = Math.floor(distance / (1000 * 60 * 60 * 24)).toString().padStart(2, '0');
+            document.getElementById("hours").innerText = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)).toString().padStart(2, '0');
+            document.getElementById("minutes").innerText = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2, '0');
+            document.getElementById("seconds").innerText = Math.floor((distance % (1000 * 60)) / 1000).toString().padStart(2, '0');
+        };
+        setInterval(updateCountdown, 1000);
+        updateCountdown();
+    </script>
+</body>
+</html>
